@@ -1,0 +1,33 @@
+venv/
+env/
+.venv/
+.env
+
+
+.DS_Store # macOS
+Thumbs.db # Windows
+
+
+*.pyc
+__pycache__/
+*~$ # Temporary files created by some editors
+
+
+*.egg
+*.whl
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+
+db.sqlite3
+/media/  # فایلهای آپلود شده (Uploaded media files)
+
+
+local_settings.py
+secrets.json
+
+*.log
+
+/staticfiles/
