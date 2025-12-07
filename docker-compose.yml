@@ -1,0 +1,32 @@
+# docker-compose.yml
+
+services:
+  # PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: havirkesht_db
+    environment:
+      POSTGRES_DB: havirkesht
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Reza2009
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  web:
+    build: .
+    container_name: havirkesht_web
+    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_NAME: havirkesht
+      DJANGO_DB_USER: postgres
+      DJANGO_DB_PASSWORD: Reza2009
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

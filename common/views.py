@@ -1,63 +1,52 @@
-from rest_framework import viewsets, status, generics
+from tokenize import TokenError
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.contrib.auth import authenticate
-
-from .models import Users, CropYear, Factory, MeasureUnit, PaymentReason
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import *
 from .pagination import CustomPagination
 
 
-class LoginView(APIView):
-    """"""
-    permission_classes = [AllowAny]
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-            user = authenticate(username=username, password=password)
-
-            if user:
-                #todo: implement jwt token logic hear
-                return Response({
-                    "access_token": "fake-jwt-access-token",
-                    "refresh_token": "fake-jwt-refresh-token",
-                    "token_type": "bearer"
-                })
-            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
-
-class RefreshTokenView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        refresh_token = request.query_params.get('refresh_token')
-        if refresh_token:
-            # todo: implement refresh token logic hear
-            return Response({
-                "access_token": "new-fake-access-token",
-                "refresh_token": "new-fake-refresh-token",
-                "token_type": "bearer"
-            })
-        return Response({"detail": "Missing refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+    # @swagger_auto_schema(
+    #     # معرفی Serializer ورودی به متد POST
+    #     request_body=CustomTokenObtainPairSerializer,
+    #     # معرفی Serializer خروجی
+    #     responses={200: TokenSerializer}
+    # )
+    # def post(self, request, *args, **kwargs):
+    #     return super().post(request, *args, **kwargs)
+class RefreshTokenView(TokenRefreshView):
+    pass
 
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = LogoutSerializer
 
     def post(self, request):
-        # todo: send token to black list
-        return Response({"message": "Successfully logged out"})
+        try:
+            refresh_token = request.data.get("refresh_token")
+            if not refresh_token:
+                return Response({"detail": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        except TokenError:
+            return Response({"detail": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
-
+    serializer_class = ChangePasswordSerializer
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -92,7 +81,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UsersDashboardView(APIView):
     permission_classes = [IsAuthenticated]
-
+    serializer_class = UsersDashboardResponseSerializer
     def get(self, request):
         user_id = request.query_params.get('user_id')
         crop_year_id = request.query_params.get('crop_year_id')

@@ -1,4 +1,8 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import Users, CropYear, Factory, MeasureUnit, PaymentReason, Roles
 
 
@@ -8,10 +12,26 @@ class TokenSerializer(serializers.Serializer):
     token_type = serializers.CharField()
 
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+        ✅ تعریف صریح فیلدها برای حل مشکل Swagger/OAuth2.
+        """
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
+    # متد validate برای فراخوانی منطق اصلی SimpleJWT ضروری است
+    def validate(self, attrs):
+        # فراخوانی متد validate کلاس پدر برای تولید توکن‌ها
+        data = super().validate(attrs)
+
+        # اگر می‌خواهید اطلاعات اضافی کاربر را در پاسخ برگردانید، اینجا اضافه کنید:
+        # data['user_id'] = self.user.id
+        # data['full_name'] = self.user.fullname
+
+        return data
+
+class LogoutSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField(required=True)
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

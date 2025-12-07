@@ -13,14 +13,15 @@ router.register(r'factory', FactoryViewSet, basename='factory')
 router.register(r'measure_unit', MeasureUnitViewSet, basename='measure-unit')
 router.register(r'payment-reason', PaymentReasonViewSet, basename='payment-reason')
 
+
+
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('token', LoginView.as_view(), name='login'),
-    path('refresh-token', RefreshTokenView.as_view(), name='refresh-token'),
-    path('logout', LogoutView.as_view(), name='logout'),
+    path('token', LoginView.as_view(), name='token_obtain_pair'),
+    path('refresh-token', RefreshTokenView.as_view(), name='token_refresh'),
+    path('logout', LogoutView.as_view(), name='auth_logout'),
     path('changepassword/', ChangePasswordView.as_view(), name='change-password'),
 
-    # Dashboard URL
     path('users-dashboard/', UsersDashboardView.as_view(), name='users-dashboard'),
 ]

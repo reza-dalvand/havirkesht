@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +43,10 @@ INSTALLED_APPS = [
     'logistic',
     'inventory',
     'finance',
-    'drf_spectacular',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -78,18 +79,46 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Havirkesht Backend API',
-    'DESCRIPTION': 'API documentation for the Havirkesht Farm Management System.',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'ENUM_NAME_OVERRIDES': {},
-    'SCHEMA_PATH_PREFIX': '/api/v1/',
-    'COMPONENT_SPLIT_REQUEST': True,
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'OAuth2': {
+            'type': 'oauth2',
+            'flow': 'password',
+            'tokenUrl': '/token',
+            'scopes': {}
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'SECURITY_REQUIREMENTS': [
+        {
+            'OAuth2': []
+        }
+    ],
+    'APISPEC_FIELD_CONVERTER': 'drf_yasg.converters.DefaultFieldConverter',
+
+}
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'common.pagination.CustomPagination',
+    'PAGE_SIZE': 50,
+'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
 }
 
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -101,18 +130,16 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'havirkesht',
-        'USER': 'postgres',
-        'PASSWORD': 'Reza2009',
-        'HOST': 'localhost',
+        'NAME': os.environ.get('DJANGO_DB_NAME', 'havirkesht'),
+        'USER': os.environ.get('DJANGO_DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD', 'Reza2009'),
+        'HOST': os.environ.get('DJANGO_DB_HOST', 'localhost'),
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
