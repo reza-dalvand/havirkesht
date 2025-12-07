@@ -12,14 +12,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
 
-    path('api/v1/', include(common_urls)),
-    path('api/v1/', include(farmer_urls)),
-    path('api/v1/', include(finance_urls)),
-    path('api/v1/', include(inventory_urls)),
-    path('api/v1/', include(logistic_urls)),
+    path('', include(common_urls)),
+    path('', include(farmer_urls)),
+    path('', include(finance_urls)),
+    path('', include(inventory_urls)),
+    path('', include(logistic_urls)),
 
-    path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/v1/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/v1/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
 ]
