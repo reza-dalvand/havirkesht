@@ -18,8 +18,8 @@ router.register(r'payment-reason', PaymentReasonViewSet, basename='payment-reaso
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('token', LoginView.as_view(), name='token_obtain_pair'),
-    path('refresh-token', RefreshTokenView.as_view(), name='token_refresh'),
+    path('token/', LoginView.as_view(), name='token_obtain_pair'),
+    path('refresh-token/', RefreshTokenView.as_view(), name='token_refresh'),
     path('logout', LogoutView.as_view(), name='auth_logout'),
     path('changepassword/', ChangePasswordView.as_view(), name='change-password'),
 

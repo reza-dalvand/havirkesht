@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-n^ig-xru31)%^^n8*a1qccrnt8q#k)fcgj9ph&&@n0y#k25$6j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -81,22 +81,21 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'OAuth2': {
-            'type': 'oauth2',
-            'flow': 'password',
-            'tokenUrl': '/token',
-            'scopes': {}
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
         }
     },
     'USE_SESSION_AUTH': False,
+    'persistAuthorization': True,
     'SECURITY_REQUIREMENTS': [
         {
-            'OAuth2': []
+            'Bearer': []
         }
     ],
-    'APISPEC_FIELD_CONVERTER': 'drf_yasg.converters.DefaultFieldConverter',
-
 }
+
 REST_FRAMEWORK = {
 'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -109,8 +108,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=14),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=20),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,

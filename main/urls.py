@@ -25,7 +25,6 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     path('', include(common_urls)),
     path('', include(farmer_urls)),
@@ -33,13 +32,6 @@ urlpatterns = [
     path('', include(inventory_urls)),
     path('', include(logistic_urls)),
 
-# مسیرهای drf-yasg
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    # مسیر فایل شمای اصلی
-    # path('schema.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    # path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    # path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-
 ]
