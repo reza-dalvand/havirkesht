@@ -20,6 +20,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd ~/havirkesht
-            git pull origin master  # اینجا هم باید master باشد
+            git pull origin master
             sudo docker compose up --build -d
             sudo docker system prune -f
