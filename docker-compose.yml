@@ -14,6 +14,10 @@ services:
 
   web:
     build: .
+    restart: always
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=185.252.86.18,yourdomain.com
     container_name: havirkesht_web
     command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
     volumes:
