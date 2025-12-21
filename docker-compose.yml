@@ -1,4 +1,4 @@
-# docker-compose.yml
+version: '3.8'
 
 services:
   # PostgreSQL
@@ -15,20 +15,20 @@ services:
   web:
     build: .
     restart: always
+    container_name: havirkesht_web
+    # تمام متغیرهای محیطی را اینجا تجمیع کردیم
     environment:
       - DEBUG=False
-      - ALLOWED_HOSTS=185.252.86.18,yourdomain.com
-    container_name: havirkesht_web
+      - ALLOWED_HOSTS=185.252.86.18,rezadalvand.ir
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=havirkesht
+      - DJANGO_DB_USER=postgres
+      - DJANGO_DB_PASSWORD=Reza2009
     command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      DJANGO_DB_HOST: db
-      DJANGO_DB_NAME: havirkesht
-      DJANGO_DB_USER: postgres
-      DJANGO_DB_PASSWORD: Reza2009
     depends_on:
       - db
 
