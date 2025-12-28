@@ -23,7 +23,13 @@ SECRET_KEY = 'django-insecure-n^ig-xru31)%^^n8*a1qccrnt8q#k)fcgj9ph&&@n0y#k25$6j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True')
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
-
+CSRF_TRUSTED_ORIGINS = [
+    "http://185.252.86.18",
+    "https://185.252.86.18",
+    "http://rezadalvand.ir",
+    "https://rezadalvand.ir",
+    "http://localhost:8000"
+]
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
