@@ -12,11 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
-print(BASE_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -24,16 +21,8 @@ print(BASE_DIR)
 SECRET_KEY = 'django-insecure-n^ig-xru31)%^^n8*a1qccrnt8q#k)fcgj9ph&&@n0y#k25$6j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-env_path = BASE_DIR / '.env'
-print(f"Looking for .env at: {env_path}")
-if env_path.exists():
-    load_dotenv(env_path)
-    print(".env loaded successfully")
-else:
-    print(".env NOT FOUND!")
-print(f"DEBUG IS: {DEBUG}")
-ALLOWED_HOSTS = ['*']
+DEBUG = os.environ.get('DEBUG', 'True')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.auth',

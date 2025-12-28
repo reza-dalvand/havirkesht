@@ -1,37 +1,38 @@
 version: '3.8'
 
 services:
-  # PostgreSQL
-  db:
+  havirkesht_db:
     image: postgres:15-alpine
     container_name: havirkesht_db
     ports:
       - "5433:5432"
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: havirkesht
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Reza2009
+      - POSTGRES_DB=${DJANGO_DB_NAME}
+      - POSTGRES_USER=${DJANGO_DB_USER}
+      - POSTGRES_PASSWORD=${DJANGO_DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    restart: always
 
   web:
     build: .
-    restart: always
     container_name: havirkesht_web
+    restart: always
+    env_file:
+      - .env
     environment:
-      - ALLOWED_HOSTS=185.252.86.18,rezadalvand.ir
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_NAME=havirkesht
-      - DJANGO_DB_USER=postgres
-      - DJANGO_DB_PASSWORD=Reza2009
-#    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
-    command: python manage.py runserver 0.0.0.0:8000
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS},185.252.86.18
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - havirkesht_db
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
 
 volumes:
   postgres_data:
