@@ -15,6 +15,7 @@ class CitySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
 class VillageSerializer(serializers.ModelSerializer):
     """اسکیما برای روستا (Village)"""
     class Meta:

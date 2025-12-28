@@ -5,6 +5,8 @@ services:
   db:
     image: postgres:15-alpine
     container_name: havirkesht_db
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_DB: havirkesht
       POSTGRES_USER: postgres
@@ -16,15 +18,14 @@ services:
     build: .
     restart: always
     container_name: havirkesht_web
-    # تمام متغیرهای محیطی را اینجا تجمیع کردیم
     environment:
-      - DEBUG=False
       - ALLOWED_HOSTS=185.252.86.18,rezadalvand.ir
       - DJANGO_DB_HOST=db
       - DJANGO_DB_NAME=havirkesht
       - DJANGO_DB_USER=postgres
       - DJANGO_DB_PASSWORD=Reza2009
-    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
+#    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:

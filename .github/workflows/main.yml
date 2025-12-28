@@ -22,4 +22,3 @@ jobs:
             cd ~/havirkesht
             git pull origin master
             sudo docker compose up --build -d
-            sudo docker system prune -f
