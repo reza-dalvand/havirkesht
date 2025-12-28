@@ -1,5 +1,4 @@
 name: Deploy Havirkesht
-
 on:
   push:
     branches:
