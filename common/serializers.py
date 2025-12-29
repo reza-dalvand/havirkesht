@@ -13,18 +13,12 @@ class TokenSerializer(serializers.Serializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """
-        ✅ تعریف صریح فیلدها برای حل مشکل Swagger/OAuth2.
-        """
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
-    # متد validate برای فراخوانی منطق اصلی SimpleJWT ضروری است
     def validate(self, attrs):
-        # فراخوانی متد validate کلاس پدر برای تولید توکن‌ها
         data = super().validate(attrs)
 
-        # اگر می‌خواهید اطلاعات اضافی کاربر را در پاسخ برگردانید، اینجا اضافه کنید:
         # data['user_id'] = self.user.id
         # data['full_name'] = self.user.fullname
 
