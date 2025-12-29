@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register("province", ProvinceViewSet)
 router.register("city", CityViewSet)
 router.register("village", VillageViewSet)
-router.register("farmer", FarmerViewSet)
+# router.register("farmer", FarmerViewSet)
 router.register("supervisor", SupervisorViewSet)
 router.register("commitment", CommitmentViewSet)
 
